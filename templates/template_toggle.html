@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+  <head>
+    <title>TITLE</title>
+    <link rel="stylesheet" href="../parsons.css" />
+    <link rel="stylesheet" href="../lib/prettify.css" />
+    <script src="../lib/prettify.js"></script>
+    <meta charset="utf8"/>
+  </head>
+  <body>
+    <h2>TITLE</h2>
+    <p>INSTRUCTIONS</p>
+    <div id="sortableTrash" class="sortable-code"><p>Trash</p></div>
+    <div id="sortable" class="sortable-code"><p>Solution</p></div>
+    <div style="clear:both;"></div>
+        <p>
+            <a href="#" id="newInstanceLink">New instance</a>
+            <a href="#" id="feedbackLink">Get feedback</a>
+        </p>
+    <div id="unittest"></div>
+    <script src="../lib/jquery.min.js"></script>
+    <script src="../lib/jquery-ui.min.js"></script>
+    <script src="../lib/jquery.ui.touch-punch.min.js"></script>
+    <script src="../lib/underscore-min.js"></script>
+    <script src="../lib/lis.js"></script>
+    <script src="../parsons.js"></script>
+    <script src="../lib/skulpt.js"></script>
+    <script src="../lib/skulpt-stdlib.js"></script>
+    <script>
+    var initial = INITIAL;
+    var unittests = UNITTESTS;
+       $(document).ready(function(){
+            var parson = new ParsonsWidget({
+                'sortableId': 'sortable',
+                        'trashId': 'sortableTrash',
+                        'unittests': unittests,
+                        toggleTypeHandlers: TOGGLE_TYPE_HANDLERS
+            });
+            parson.init(initial);
+            parson.shuffleLines();
+            $("#newInstanceLink").click(function(event){
+                event.preventDefault();
+                parson.shuffleLines();
+            });
+            $("#feedbackLink").click(function(event){
+                event.preventDefault();
+                var fb = parson.getFeedback();
+                $("#unittest").html("<h2>Feedback from testing your program:</h2>" + fb.feedback);
+                if (fb.success) { alert("Good, you solved the assignment!"); }
+            });
+         });
+    </script>
+    </body>
+</html>
