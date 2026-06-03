@@ -7,19 +7,16 @@
         <script src="static/prettify.js"></script>
     </head>
     <body>
-        <h2>TITLE</h2>
-        <p>INSTRUCTIONS</p>
+        <h2>Toggle problem</h2>
+        <p>Construct a function which returns the largest of the two arguments. You can change the value of a toggleable element by clicking.</p>
         
         <div class="parsons-vertical">
-            <div id="sortableTrash" class="sortable-code"></div>
-            <hr />
-            <h3>Construct your solution here</h3>
             <div id="sortable" class="sortable-code"></div>
         </div>
         <div style=\"clear:both;\"></div>
         <p>
             <a href="#" id="newInstanceLink">Reset Problem</a>
-               FEEDBACK_LINKS
+               <a href="#" id="feedbackLink" style="margin-left: 10px;">Run Test</a>
         </p>
         <script src="static/jquery.min.js"></script>
         <script src="static/jquery-ui.min.js"></script>
@@ -27,6 +24,8 @@
         <script src="static/underscore-min.js"></script>
         <script src="static/lis.js"></script>
         <script src="static/parsons.js"></script>
+        <script src="static/skulpt.js"></script>
+        <script src="static/skulpt-stdlib.js"></script> 
         <script>
     /* Scoped styles to ensure the layout containers stay visible and structured */
     (function(){
@@ -38,17 +37,37 @@
     })();
 
     // Injected configuration properties from Python
-    var initial = INITIAL; 
-    var runTests = WITH_UNITTESTS; 
+    var initial = "def find_largest(a, b):\n" +
+"    if <span class=\"jsparson-toggle\" data-jsp-options=\"[&quot;a&quot;, &quot;b&quot;]\"></span> > <span class=\"jsparson-toggle\" data-jsp-options=\"[&quot;a&quot;, &quot;b&quot;]\"></span>:\n" +
+"        return <span class=\"jsparson-toggle\" data-jsp-options=\"[&quot;a&quot;, &quot;b&quot;]\"></span>\n" +
+"    else:\n" +
+"        return <span class=\"jsparson-toggle\" data-jsp-options=\"[&quot;a&quot;, &quot;b&quot;]\"></span>\n"; 
+    var unittests = "import unittestparson\nclass myTests(unittestparson.unittest):\n  def testOne(self):\n    self.assertEqual(find_largest(0, 2), 2, \"Calling function <code>find_largest(0, 2)</code>.\")\n    self.assertEqual(find_largest(4, 2), 4, \"Calling function <code>find_largest(4, 2)</code>.\")\n    self.assertEqual(find_largest(-5, -1), -1, \"Calling function <code>find_largest(-5, -1)</code>.\")\n_test_result = myTests().main()"; 
 
     var originalUpdateHTMLIndent = ParsonsWidget.prototype.updateHTMLIndent;
     ParsonsWidget.prototype.updateHTMLIndent = function(id) {
         var line = this.getLineById(id);
-        if (!SHOULD_SHUFFLE && line.original_indent !== undefined) {
+        if (!false && line.original_indent !== undefined) {
             line.indent = line.original_indent;
         }
         originalUpdateHTMLIndent.call(this, id);
     };
+
+   function displayErrors(fb) {
+    // Target the specific list ID
+    var $list = $("#ul-sortable");
+    
+    // Clear any conflicting library classes
+    $list.removeClass("correct incorrect test-pass test-fail");
+    
+    // Apply the new status
+    if (fb.success) {
+        $list.addClass("test-pass");
+    } else {
+        $list.addClass("test-fail");
+        $("#unittest").html("<h2>Results:</h2>" + (fb.html || "No feedback"));
+    }
+}
 
     // --- MONKEY PATCH ---
     // Intercept initialisation to preserve structured indents for clean resets
@@ -63,28 +82,41 @@
             item.id = id_prefix + index;
             // Back up the pristine structural indent configuration
             item.original_indent = item.indent; 
-            if (SHOULD_SHUFFLE) {
+            if (false) {
                 item.indent = 0;
             }
         });
     };
     // --------------------
 
-    function displayErrors(fb) {
-        if(fb.errors.length > 0) {
-            alert(fb.errors[0]);
+
+
+    function freezeBoard() {
+    // Block drag initiation
+    $(".sortable-code li").on("mousedown touchstart", function(e) {
+        // Check if the click originated from a toggle element
+        if ($(e.target).hasClass("jsparson-toggle")) {
+            // Let the toggle work normally
+            return true; 
         }
-    } 
-
-
     
+    
+
+        // Otherwise, stop the event from reaching the drag-and-drop handler
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        return false;
+    });
+
+    }
+        
     // Controls the initial distribution and layout generation rules
     function runShuffleAndDeploy(parsonInstance) {
         // Always run the library's native layout generator first.
         // This ensures the DOM sub-lists are completely generated and connected via jQuery UI.
         parsonInstance.shuffleLines();
         
-        if (!SHOULD_SHUFFLE) {
+        if (!false) {
             // Restore structural indents in the data model in case items were previously zeroed out in trash
             $.each(parsonInstance.modified_lines, function(index, item) {
                 item.indent = item.original_indent;
@@ -104,17 +136,20 @@
         }
     }
 
+  
+
     $(document).ready(function(){
         // Keep both container IDs bound at all times to preserve drag-and-drop connections
         var widgetOptions = {
             'sortableId': 'sortable',
-            'trashId': 'sortableTrash',
             'max_wrong_lines': 1,
             'feedback_cb' : displayErrors,
-            'x_indent': 20
+            'x_indent': 20,
+            'unittests': unittests,
+            'dragdropEnabled': false
         };
 
-        if (!SHOULD_SHUFFLE) {
+        if (!false) {
             // Apply the ordered sequential map
             widgetOptions['permutation'] = function(n) { 
                 var arr = []; for (var i = 0; i < n; i++) { arr.push(i); } return arr; 
@@ -122,15 +157,41 @@
         }
 
         var parson = new ParsonsWidget(widgetOptions);
+
+       
         
+        $(document).on('click', '.jsparson-toggle', function() {
+        var options = $(this).data('jsp-options');
+        var current = $(this).text();
+        var currentIndex = options.indexOf(current);
+        var nextIndex = (currentIndex + 1) % options.length;
+        $(this).text(options[nextIndex]);
+        });
         // Initialise and render the workspace layout
         parson.init(initial);
+
+        // Manually trigger the toggle activation for the rendered lines
+        if (typeof parson.addToggleHandlers === "function") {
+            parson.addToggleHandlers();
+        } else {
+            // Fallback: Manually bind click events if the library is older/different
+            $(document).on('click', '.jsparson-toggle', function() {
+                var options = $(this).data('jsp-options');
+                var current = $(this).text();
+                var nextIndex = (options.indexOf(current) + 1) % options.length;
+                $(this).text(options[nextIndex]);
+            });
+        }
         runShuffleAndDeploy(parson);
-        
+        freezeBoard();
+        $(".sortable-code li").css("cursor", "default");
+
         // Reset button workflow
         $("#newInstanceLink").click(function(event){
             event.preventDefault();
             runShuffleAndDeploy(parson);
+            freezeBoard();
+            $(".sortable-code li").css("cursor", "default");
         });
         
         // Validation workflow

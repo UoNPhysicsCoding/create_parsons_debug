@@ -1,3 +1,15 @@
+Metadata-Version: 2.4
+Name: create-parsons-debug
+Version: 0.1.0
+Summary: Small tools to build js-parsons interactive problems (rearrange, debug, toggle).
+Requires-Python: >=3.8.1
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"
+Requires-Dist: black>=23.0; extra == "dev"
+Dynamic: license-file
+
 # create-parsons-debug
 
 Small toolkit to build js-parsons interactive problems (rearrange, debug, toggle).
@@ -9,30 +21,59 @@ Install `uv-astral` following the official guide: https://docs.astral.sh/uv/gett
 This project requires Python >= 3.8.1. Then from the project root run `uv sync` to create the environment and install project deps. After that activate the created `.venv` and install the package in editable mode:
 
 ```powershell
-# from project root install / update libraries
+# from project root
 uv sync
-# In the scripts folder open the python script corresponding to the type of problem and edit the All Caps variables
-# to modify the key input. You can set the with_unittests = True to show the student feedback or false if for example
-# you want to use the problem in a test.
-uv run python ./scripts/<name of python script>
+# activate the created virtualenv
+# Windows PowerShell
+.venv\Scripts\Activate.ps1
+# Unix
+source .venv/bin/activate
+# install package with dev extras
+pip install -e .[dev]
 ```
 
-## How to deploy
+The `[dev]` extras include `pytest` and `black` for development and testing.
 
-In order for these problems to work you need the html file generated in output. You also need to copy the folder `static` containing the css and javascript into the same folder as the html file wherever you are planning to use it, eg a website. If you want to embed this in your Jupyter notebook, you can use a code cell and the Ipython display module to display the html file. For example:
+## Usage
 
-```python
-from IPython.display import IFrame
-IFrame('output/test_problem.html', width=800, height=600)
+Build specific problem HTML files (console scripts installed by `pyproject.toml`):
+
+```bash
+create-parsons-rearrange    # generates output/test_problem.html
+create-parsons-toggle       # generates output/toggle_problem.html
+create-parsons-debug        # generates output/debug_problem.html
+```
+
+Or run the builders as modules from the project root:
+
+```bash
+python -m create_parsons_debug.scripts.rearrange_problems
+python -m create_parsons_debug.scripts.create_toggle_problem
+python -m create_parsons_debug.scripts.debug_problems
 ```
 
 ## Running student tests locally
 
 Place student code in `create_parsons_debug/tests/student_tests/student_solution.py` (or update imports in the tests), then run:
 
-## Credit
+```bash
+pytest create_parsons_debug/tests/student_tests
+```
 
-I have built this largely as a wrapper with modifications to underlying problems using (js-parsons repo)[https://js-parsons.github.io/] as a starting point. Credit where credit is due.
+## Development
+
+- Format with `black .`
+- Lint with `flake8 .`
+Parsons Programming Puzzles
+==========================
+
+Parsons programming puzzles are a type of scaffolded program construction tasks where the learner is given a set of code
+fragments, blocks of a single or multiple lines of code, and the task is to piece together a program from these.
+
+In js-parsons, learners not only select and order but also indent code fragments. This variant of Parsons programming 
+puzzles is called two-dimensional (2D) Parsons problems. In Python, code indentation has a semantic meaning, as an 
+indented statement falls into the surrounding control structure, which has lower  indentation. That is, code blocks 
+are deﬁned by indentation instead of start and end symbols like curly braces. 
 
 Publications based on js-parsons
 --------------------------------

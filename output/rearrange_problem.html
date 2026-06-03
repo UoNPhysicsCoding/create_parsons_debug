@@ -7,8 +7,8 @@
         <script src="static/prettify.js"></script>
     </head>
     <body>
-        <h2>TITLE</h2>
-        <p>INSTRUCTIONS</p>
+        <h2>Rearrange example problem</h2>
+        <p>The aim of this problem is to produce a function which tests whether the supplied parameter boolean value is True or False. Drag and drop the lines into the box below in the correct order. When you think you have the correct solution press `Give Feedback`. You can start again by pressing `Reset Problem`</p>
         
         <div class="parsons-vertical">
             <div id="sortableTrash" class="sortable-code"></div>
@@ -19,7 +19,7 @@
         <div style=\"clear:both;\"></div>
         <p>
             <a href="#" id="newInstanceLink">Reset Problem</a>
-               FEEDBACK_LINKS
+               <a href="#" id="feedbackLink" style="margin-left: 10px;">Give Feedback</a>
         </p>
         <script src="static/jquery.min.js"></script>
         <script src="static/jquery-ui.min.js"></script>
@@ -38,13 +38,17 @@
     })();
 
     // Injected configuration properties from Python
-    var initial = INITIAL; 
-    var runTests = WITH_UNITTESTS; 
+    var initial = "def is_true(boolean_value):\n" +
+"  if boolean_value:\n" +
+"    return True\n" +
+"  return False\n" +
+"  return true #distractor\n"; 
+    var runTests = false; 
 
     var originalUpdateHTMLIndent = ParsonsWidget.prototype.updateHTMLIndent;
     ParsonsWidget.prototype.updateHTMLIndent = function(id) {
         var line = this.getLineById(id);
-        if (!SHOULD_SHUFFLE && line.original_indent !== undefined) {
+        if (!true && line.original_indent !== undefined) {
             line.indent = line.original_indent;
         }
         originalUpdateHTMLIndent.call(this, id);
@@ -63,7 +67,7 @@
             item.id = id_prefix + index;
             // Back up the pristine structural indent configuration
             item.original_indent = item.indent; 
-            if (SHOULD_SHUFFLE) {
+            if (true) {
                 item.indent = 0;
             }
         });
@@ -84,7 +88,7 @@
         // This ensures the DOM sub-lists are completely generated and connected via jQuery UI.
         parsonInstance.shuffleLines();
         
-        if (!SHOULD_SHUFFLE) {
+        if (!true) {
             // Restore structural indents in the data model in case items were previously zeroed out in trash
             $.each(parsonInstance.modified_lines, function(index, item) {
                 item.indent = item.original_indent;
@@ -114,7 +118,7 @@
             'x_indent': 20
         };
 
-        if (!SHOULD_SHUFFLE) {
+        if (!true) {
             // Apply the ordered sequential map
             widgetOptions['permutation'] = function(n) { 
                 var arr = []; for (var i = 0; i < n; i++) { arr.push(i); } return arr; 

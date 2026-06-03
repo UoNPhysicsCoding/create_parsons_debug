@@ -1,0 +1,4 @@
+[console_scripts]
+create-parsons-debug = create_parsons_debug.scripts.debug_problems:main
+create-parsons-rearrange = create_parsons_debug.scripts.rearrange_problems:main
+create-parsons-toggle = create_parsons_debug.scripts.create_toggle_problem:main

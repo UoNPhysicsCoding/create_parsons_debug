@@ -1,0 +1,16 @@
+LICENSE
+README.md
+pyproject.toml
+create_parsons_debug.egg-info/PKG-INFO
+create_parsons_debug.egg-info/SOURCES.txt
+create_parsons_debug.egg-info/dependency_links.txt
+create_parsons_debug.egg-info/entry_points.txt
+create_parsons_debug.egg-info/requires.txt
+create_parsons_debug.egg-info/top_level.txt
+scripts/__init__.py
+scripts/create_toggle_problem.py
+scripts/debug_problems.py
+scripts/rearrange_problems.py
+tests/student_tests/debug_test.py
+tests/student_tests/rearrange_test.py
+tests/student_tests/toggle_test.py

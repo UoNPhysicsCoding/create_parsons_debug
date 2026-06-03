@@ -1,0 +1,6 @@
+lib
+output
+scripts
+templates
+tests
+ui-extension

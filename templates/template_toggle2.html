@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+  <head>
+    <title>TITLE</title>
+    <link rel="stylesheet" href="static/parsons.css" />
+    <link rel="stylesheet" href="static/prettify.css" />
+    <script src="static/prettify.js"></script>
+    <meta charset="utf8"/>
+  </head>
+  <body>
+    <h2>TITLE</h2>
+    <p>INSTRUCTIONS</p>
+        <div class="parsons-vertical">
+            <div id="sortableTrash" class="sortable-code"><p>Trash</p></div>
+            <hr />
+            <h3>Construct your solution here</h3>
+            <div id="sortable" class="sortable-code"><p>Solution</p></div>
+        </div>
+    <div style="clear:both;"></div>
+        FEEDBACK_LINKS
+    UNITTEST_CONTAINER
+    <script src="static/jquery.min.js"></script>
+    <script src="static/jquery-ui.min.js"></script>
+    <script src="static/jquery.ui.touch-punch.min.js"></script>
+    <script src="static/underscore-min.js"></script>
+    <script src="static/lis.js"></script>
+    <script src="static/parsons.js"></script>
+    <script src="static/skulpt.js"></script>
+    <script src="static/skulpt-stdlib.js"></script>
+    <script>
+    (function(){
+        var style = document.createElement('style');
+        style.innerHTML = '\n.parsons-vertical .sortable-code { float: none !important; width: 100% !important; margin: 0 0 10px 0 !important; }\n.parsons-vertical h3 { margin-top: 6px; margin-bottom: 6px; }\n';
+        document.head.appendChild(style);
+    })();
+
+    var initial = INITIAL;
+    var unittests = UNITTESTS;
+       $(document).ready(function(){
+            var parson = new ParsonsWidget({
+                'sortableId': 'sortable',
+                        'trashId': 'sortableTrash',
+                        'unittests': unittests,
+                        'permutation': PERMUTATION,
+                        toggleTypeHandlers: TOGGLE_TYPE_HANDLERS
+            });
+            parson.init(initial);
+            parson.shuffleLines();
+            $("#newInstanceLink").click(function(event){
+                event.preventDefault();
+                parson.shuffleLines();
+            });
+            $("#feedbackLink").click(function(event){
+                event.preventDefault();
+                var fb = parson.getFeedback();
+                $("#unittest").html("<h2>Feedback from testing your program:</h2>" + fb.feedback);
+                if (fb.success) { alert("Good, you solved the assignment!"); }
+            });
+         });
+    </script>
+    </body>
+</html>

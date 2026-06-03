@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "create-parsons-debug"
+version = "0.1.0"
+description = "Small tools to build js-parsons interactive problems (rearrange, debug, toggle)."
+readme = "README.md"
+requires-python = ">=3.8.1"
+dependencies = []
+
+[project.scripts]
+create-parsons-debug = "create_parsons_debug.scripts.debug_problems:main"
+create-parsons-toggle = "create_parsons_debug.scripts.create_toggle_problem:main"
+create-parsons-rearrange = "create_parsons_debug.scripts.rearrange_problems:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+[project.optional-dependencies]
+dev = [
+	"pytest>=7.0",
+	"black>=23.0"
+]
