@@ -19,11 +19,11 @@ uv run python ./scripts/<name of python script>
 
 ## How to deploy
 
-In order for these problems to work you need the html file generated in output. You also need to copy the folder `static` containing the css and javascript into the same folder as the html file wherever you are planning to use it, eg a website. If you want to embed this in your Jupyter notebook, you can use a code cell and the Ipython display module to display the html file. For example:
+In order for these problems to work you need the html file generated in output. You also need to copy the folder `static` containing the css and javascript into the same folder as the html file wherever you are planning to use it, eg a website. If you want to embed this in your Jupyter notebook, you can use a code cell and the Ipython display module to display the html file. I put them in a .exercises folder so that its hidden from students in the template we created.For example:
 
 ```python
 from IPython.display import IFrame
-IFrame('output/test_problem.html', width=800, height=600)
+IFrame('.exercises/test_problem.html', width=800, height=600)
 ```
 
 ## Running student tests locally

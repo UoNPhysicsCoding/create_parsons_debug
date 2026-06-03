@@ -1,9 +1,8 @@
-from pathlib import Path
-import json
-import argparse
-import re
-import html
 
+
+"""----------------------------------------------------------------------------------------------
+# Everything you need to change is below here
+------------------------------------------------------------------------------------------------"""
 
 TITLE = "Toggle problem"
 INSTRUCTIONS = (
@@ -38,6 +37,46 @@ TOGGLE_TYPE_HANDLERS = {
 }
 PROBLEM_NAME = "toggle_problem.html"
 
+"""----------------------------------------------------------------------------------------------
+# Everything you need to change is above here
+------------------------------------------------------------------------------------------------"""
+from pathlib import Path
+import json
+import argparse
+import re
+import html
+import os
+import re
+
+import re
+import os
+from pathlib import Path
+
+def get_inlined_html(html_content, base_path='./.exercises'):
+    """
+    Transforms HTML so it contains all CSS and JS content internally.
+    """
+    def replace_resource(match):
+        tag = match.group(0)
+        path = match.group(1) # The path like 'static/parsons.js'
+        
+        # Point to the real location of your static assets
+        full_path = Path(base_path) / path
+        
+        if full_path.exists():
+            content = full_path.read_text(encoding='utf-8')
+            if path.endswith('.css'):
+                return f"<style>{content}</style>"
+            elif path.endswith('.js'):
+                return f"<script>{content}</script>"
+        else:
+            print(f"DEBUG: !!! File NOT found at {full_path.absolute()}")
+            return tag
+        return tag # Return original if not found
+
+    # This regex handles both single and double quotes
+    return re.sub(r'<(?:link|script)[^>]*?(?:href|src)=["\']([^"\']+?\.(?:css|js))["\'][^>]*?>', 
+                  replace_resource, html_content)
 
 def build_js_string(lines):
     if not lines:
@@ -82,8 +121,10 @@ def create_toggle_problem_html(title, instructions, initial_lines, unittests_lin
     problem_html = problem_html.replace("SHOULD_SHUFFLE", shuffle_js)
     problem_html = problem_html.replace("FEEDBACK_LINKS", feedback_html)
 
-
-    output_path.write_text(problem_html, encoding="utf-8")
+    script_dir = Path(__file__).resolve().parent
+    project_root = script_dir.parent  # This assumes your script is in /scripts
+    inline_html = get_inlined_html(problem_html, base_path=str(project_root))
+    output_path.write_text(inline_html, encoding="utf-8")
     return output_path
 
 
