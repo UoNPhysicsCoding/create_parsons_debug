@@ -1,0 +1,6 @@
+lib
+scripts
+static
+templates
+tests
+ui-extension

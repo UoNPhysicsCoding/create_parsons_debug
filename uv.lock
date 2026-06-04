@@ -182,7 +182,7 @@ wheels = [
 ]
 
 [[package]]
-name = "create-parsons-debug"
+name = "create-parsons"
 version = "0.1.0"
 source = { editable = "." }
 

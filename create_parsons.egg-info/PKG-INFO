@@ -1,3 +1,15 @@
+Metadata-Version: 2.4
+Name: create-parsons
+Version: 0.1.0
+Summary: Small tools to build js-parsons interactive problems (rearrange, debug, toggle).
+Requires-Python: >=3.8.1
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"
+Requires-Dist: black>=23.0; extra == "dev"
+Dynamic: license-file
+
 # create-parsons
 
 Small toolkit to build parsons interactive problems (rearrange, toggle).
